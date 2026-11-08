@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.VBox?>
+
+<!-- Sections are built in SettingsController and depend on the user's role -->
+<ScrollPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.ekagra.controller.SettingsController"
+            fitToWidth="true" styleClass="page-scroll">
+    <VBox fx:id="root" spacing="14" maxWidth="860"/>
+</ScrollPane>

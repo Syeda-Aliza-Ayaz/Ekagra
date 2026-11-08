@@ -1,0 +1,25 @@
+﻿# Internal planning notes (team only, not part of submission)
+_internal/
+
+# Build output
+target/
+dist/
+out/
+*.class
+
+# Local database & exports
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+exports/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# OS
+Thumbs.db
+.DS_Store
+

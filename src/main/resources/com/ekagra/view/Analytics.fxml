@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<ScrollPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.ekagra.controller.AnalyticsController"
+            fitToWidth="true" styleClass="page-scroll">
+    <VBox spacing="14">
+
+        <!-- Filters: one row above the charts -->
+        <HBox styleClass="card,filter-bar" spacing="12" alignment="CENTER_LEFT">
+            <Label text="Period" styleClass="field-label"/>
+            <HBox>
+                <ToggleButton fx:id="range7" text="7 days" styleClass="left-pill" selected="true"/>
+                <ToggleButton fx:id="range14" text="14 days" styleClass="center-pill"/>
+                <ToggleButton fx:id="range30" text="30 days" styleClass="right-pill"/>
+            </HBox>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label text="Scoring mode" styleClass="field-label"/>
+            <ComboBox fx:id="strategyBox" prefWidth="190"/>
+        </HBox>
+        <Label fx:id="strategyDescription" styleClass="strategy-description" maxWidth="Infinity" wrapText="true"/>
+
+        <!-- Row 1 -->
+        <HBox spacing="14">
+            <VBox styleClass="card" spacing="6" HBox.hgrow="ALWAYS" minWidth="420">
+                <HBox alignment="CENTER_LEFT">
+                    <Label text="Productivity score" styleClass="h3"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label fx:id="avgScore" styleClass="muted,small"/>
+                </HBox>
+                <StackPane fx:id="scoreChartHolder" prefHeight="220" minHeight="200"/>
+            </VBox>
+            <VBox styleClass="card" spacing="10" prefWidth="400" minWidth="360">
+                <Label text="How today's score is made" styleClass="h3"/>
+                <Label fx:id="todayTotal" styleClass="muted,small"/>
+                <VBox fx:id="breakdownList" spacing="10"/>
+            </VBox>
+        </HBox>
+
+        <!-- Row 2 -->
+        <HBox spacing="14">
+            <VBox styleClass="card" spacing="6" HBox.hgrow="ALWAYS" minWidth="420">
+                <Label text="Screen time by category" styleClass="h3"/>
+                <Label text="Hours per day" styleClass="muted,small"/>
+                <StackPane fx:id="categoryChartHolder" prefHeight="240" minHeight="220"/>
+            </VBox>
+            <VBox styleClass="card" spacing="10" prefWidth="400" minWidth="360">
+                <Label text="Where the time went" styleClass="h3"/>
+                <Label fx:id="periodTotal" styleClass="muted,small"/>
+                <VBox fx:id="shareList" spacing="12"/>
+            </VBox>
+        </HBox>
+
+        <!-- Row 3 -->
+        <HBox spacing="14">
+            <VBox styleClass="card" spacing="6" HBox.hgrow="ALWAYS" minWidth="420">
+                <HBox alignment="CENTER_LEFT">
+                    <Label text="Focus minutes per day" styleClass="h3"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label fx:id="focusTotal" styleClass="muted,small"/>
+                </HBox>
+                <Label fx:id="focusTargetNote" styleClass="muted,small"/>
+                <StackPane fx:id="focusChartHolder" prefHeight="220" minHeight="200"/>
+            </VBox>
+            <VBox styleClass="card" spacing="10" prefWidth="400" minWidth="360">
+                <Label text="Top apps" styleClass="h3"/>
+                <VBox fx:id="topAppList" spacing="12"/>
+            </VBox>
+        </HBox>
+
+        <!-- Insights -->
+        <VBox styleClass="card" spacing="10">
+            <Label text="Insights" styleClass="h3"/>
+            <VBox fx:id="insightList" spacing="8"/>
+        </VBox>
+    </VBox>
+</ScrollPane>

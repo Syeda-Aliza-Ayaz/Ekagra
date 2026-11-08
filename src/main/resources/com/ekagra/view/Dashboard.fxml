@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<ScrollPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.ekagra.controller.DashboardController"
+            fitToWidth="true" styleClass="page-scroll">
+    <VBox spacing="14">
+
+        <!-- Greeting + quick actions -->
+        <HBox alignment="CENTER_LEFT" spacing="10" styleClass="hero">
+            <VBox spacing="3">
+                <Label fx:id="greeting" styleClass="hero-title"/>
+                <Label fx:id="subline" styleClass="hero-sub"/>
+            </VBox>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="New task" onAction="#onNewTask" styleClass="hero-button">
+                <graphic><FontIcon iconLiteral="fth-plus"/></graphic>
+            </Button>
+            <Button text="Start focus" onAction="#onStartFocus" styleClass="hero-button,hero-primary">
+                <graphic><FontIcon iconLiteral="fth-play"/></graphic>
+            </Button>
+        </HBox>
+
+        <!-- Score + tiles -->
+        <HBox spacing="14">
+            <VBox styleClass="card" spacing="10" prefWidth="430" minWidth="400">
+                <HBox alignment="CENTER_LEFT" spacing="8">
+                    <Label text="Productivity score" styleClass="h3"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label fx:id="strategyChip"/>
+                </HBox>
+                <HBox spacing="18" alignment="CENTER_LEFT">
+                    <StackPane fx:id="scoreRingHolder"/>
+                    <VBox fx:id="scoreParts" spacing="9" HBox.hgrow="ALWAYS"/>
+                </HBox>
+                <Label fx:id="scoreDelta" styleClass="muted,small"/>
+            </VBox>
+            <GridPane fx:id="tiles" hgap="14" vgap="14" HBox.hgrow="ALWAYS"/>
+        </HBox>
+
+        <!-- Week trend + insights -->
+        <HBox spacing="14">
+            <VBox styleClass="card" spacing="6" HBox.hgrow="ALWAYS" minWidth="380">
+                <Label text="Score, last 7 days" styleClass="h3"/>
+                <StackPane fx:id="weekChartHolder" prefHeight="190" minHeight="170"/>
+            </VBox>
+            <VBox styleClass="card" spacing="10" prefWidth="460" minWidth="380">
+                <HBox alignment="CENTER_LEFT">
+                    <Label text="Insights" styleClass="h3"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Button text="See analytics" styleClass="link-button" onAction="#onOpenAnalytics"/>
+                </HBox>
+                <VBox fx:id="insightList" spacing="8"/>
+            </VBox>
+        </HBox>
+
+        <!-- Up next + goals -->
+        <HBox spacing="14">
+            <VBox styleClass="card" spacing="10" HBox.hgrow="ALWAYS" minWidth="380">
+                <HBox alignment="CENTER_LEFT">
+                    <Label text="Up next" styleClass="h3"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Button text="All tasks" styleClass="link-button" onAction="#onOpenTasks"/>
+                </HBox>
+                <VBox fx:id="upNextList" spacing="8"/>
+            </VBox>
+            <VBox styleClass="card" spacing="10" HBox.hgrow="ALWAYS" minWidth="380">
+                <HBox alignment="CENTER_LEFT">
+                    <Label text="Today's goals" styleClass="h3"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Button text="Manage" styleClass="link-button" onAction="#onOpenGoals"/>
+                </HBox>
+                <VBox fx:id="goalList" spacing="10"/>
+            </VBox>
+        </HBox>
+    </VBox>
+</ScrollPane>

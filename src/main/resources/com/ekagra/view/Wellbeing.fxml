@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<ScrollPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.ekagra.controller.WellbeingController"
+            fitToWidth="true" styleClass="page-scroll">
+    <VBox spacing="14">
+
+        <!-- Row 1: score + mood check-in -->
+        <HBox spacing="14">
+            <VBox styleClass="card" spacing="10" prefWidth="420" minWidth="380">
+                <Label text="Wellbeing score" styleClass="h3"/>
+                <HBox spacing="18" alignment="CENTER_LEFT">
+                    <StackPane fx:id="scoreRingHolder"/>
+                    <VBox fx:id="scoreParts" spacing="10" HBox.hgrow="ALWAYS"/>
+                </HBox>
+            </VBox>
+
+            <VBox styleClass="card" spacing="10" HBox.hgrow="ALWAYS">
+                <HBox alignment="CENTER_LEFT">
+                    <Label text="How are you feeling today?" styleClass="h3"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label fx:id="moodStatus" styleClass="muted,small"/>
+                </HBox>
+                <HBox fx:id="moodButtons" spacing="8"/>
+                <Label text="Stress level" styleClass="field-label"/>
+                <HBox fx:id="stressButtons" spacing="8"/>
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <TextField fx:id="moodNote" promptText="Anything on your mind? (optional)" HBox.hgrow="ALWAYS"/>
+                    <Button text="Save check-in" styleClass="accent" onAction="#onSaveMood"/>
+                </HBox>
+                <Label fx:id="moodMessage" visible="false" managed="false"/>
+            </VBox>
+        </HBox>
+
+        <!-- Row 2: screen-time limits + breaks -->
+        <HBox spacing="14">
+            <VBox styleClass="card" spacing="10" HBox.hgrow="ALWAYS">
+                <HBox alignment="CENTER_LEFT" spacing="8">
+                    <Label text="Screen time today" styleClass="h3"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label fx:id="screenUsed" styleClass="screen-used"/>
+                </HBox>
+                <ProgressBar fx:id="screenBar" maxWidth="Infinity" styleClass="limit-bar"/>
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Label text="Daily limit (min)" styleClass="field-label"/>
+                    <Spinner fx:id="dailyLimitSpinner" editable="true" prefWidth="170"/>
+                    <Button text="Save" onAction="#onSaveDailyLimit"/>
+                </HBox>
+
+                <Label text="App &amp; website limits" styleClass="field-label">
+                    <VBox.margin><Insets top="6"/></VBox.margin>
+                </Label>
+                <VBox fx:id="appLimitList" spacing="8"/>
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <ComboBox fx:id="appLimitName" editable="true" promptText="e.g. Instagram" prefWidth="200"/>
+                    <Spinner fx:id="appLimitSpinner" editable="true" prefWidth="150"/>
+                    <Button text="Add limit" onAction="#onAddAppLimit"/>
+                </HBox>
+                <Label fx:id="limitMessage" visible="false" managed="false"/>
+            </VBox>
+
+            <VBox styleClass="card" spacing="10" prefWidth="350" minWidth="320">
+                <Label text="Breaks" styleClass="h3"/>
+                <HBox spacing="10" alignment="CENTER_LEFT" styleClass="continuous-box">
+                    <Label fx:id="continuousValue" styleClass="continuous-value"/>
+                    <Label text="at the screen since your last break" styleClass="muted" wrapText="true"/>
+                </HBox>
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Label text="Remind me every (min)"/>
+                    <Spinner fx:id="breakSpinner" editable="true" prefWidth="150"/>
+                </HBox>
+                <CheckBox fx:id="eyeRestCheck" text="20-20-20 eye breaks every 20 minutes"/>
+                <CheckBox fx:id="remindersCheck" text="Wellbeing reminders on"/>
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Button text="Save" onAction="#onSaveBreaks"/>
+                    <Label fx:id="breakHint" styleClass="muted,small"/>
+                </HBox>
+            </VBox>
+        </HBox>
+
+        <!-- Row 3: sleep + mood trend -->
+        <HBox spacing="14">
+            <VBox styleClass="card" spacing="10" HBox.hgrow="ALWAYS" minWidth="380">
+                <HBox alignment="CENTER_LEFT">
+                    <Label text="Sleep" styleClass="h3"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label fx:id="sleepStatus" styleClass="muted,small"/>
+                </HBox>
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Label text="Went to bed"/>
+                    <ComboBox fx:id="bedtimeBox" editable="true" prefWidth="110"/>
+                    <Label text="Woke up"/>
+                    <ComboBox fx:id="wakeBox" editable="true" prefWidth="110"/>
+                    <Button text="Log sleep" onAction="#onSaveSleep"/>
+                </HBox>
+                <Label fx:id="sleepMessage" visible="false" managed="false"/>
+                <Label text="Hours slept, last 7 nights" styleClass="muted,small"/>
+                <StackPane fx:id="sleepChartHolder" prefHeight="210" minHeight="190"/>
+            </VBox>
+            <VBox styleClass="card" spacing="10" HBox.hgrow="ALWAYS" minWidth="380">
+                <Label text="Mood &amp; stress, last 7 days" styleClass="h3"/>
+                <Label text="1 = low, 5 = high" styleClass="muted,small"/>
+                <StackPane fx:id="moodChartHolder" prefHeight="250" minHeight="230"/>
+            </VBox>
+        </HBox>
+    </VBox>
+</ScrollPane>

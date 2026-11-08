@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<HBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.ekagra.controller.FocusController" spacing="20">
+
+    <!-- Timer -->
+    <ScrollPane fitToWidth="true" fitToHeight="true" styleClass="page-scroll" HBox.hgrow="ALWAYS">
+    <VBox styleClass="card,timer-card" alignment="CENTER" spacing="12" minHeight="-Infinity">
+        <HBox alignment="CENTER">
+            <ToggleButton fx:id="focusMode" text="Focus" styleClass="left-pill" selected="true"/>
+            <ToggleButton fx:id="shortMode" text="Short break" styleClass="center-pill"/>
+            <ToggleButton fx:id="longMode" text="Long break" styleClass="right-pill"/>
+        </HBox>
+
+        <StackPane fx:id="ringHolder"/>
+
+        <HBox fx:id="cycleDots" alignment="CENTER" spacing="8"/>
+
+        <HBox alignment="CENTER" spacing="12">
+            <Button fx:id="mainButton" styleClass="accent,timer-main-button" onAction="#onMain"/>
+            <Button fx:id="stopButton" styleClass="timer-side-button" onAction="#onStop">
+                <graphic><FontIcon iconLiteral="fth-square"/></graphic>
+            </Button>
+            <Button fx:id="skipButton" styleClass="timer-side-button" onAction="#onSkip">
+                <graphic><FontIcon iconLiteral="fth-skip-forward"/></graphic>
+            </Button>
+        </HBox>
+
+        <VBox spacing="6" maxWidth="380">
+            <Label text="What are you working on?" styleClass="field-label"/>
+            <ComboBox fx:id="taskCombo" maxWidth="Infinity"/>
+        </VBox>
+
+        <Label fx:id="distractionLabel" styleClass="distraction-label" visible="false"/>
+    </VBox>
+    </ScrollPane>
+
+    <!-- Side panel -->
+    <ScrollPane fitToWidth="true" styleClass="page-scroll" prefWidth="360" minWidth="340">
+        <VBox spacing="16">
+            <VBox styleClass="card" spacing="12">
+                <Label text="Today" styleClass="h3"/>
+                <HBox fx:id="todayStats" spacing="10"/>
+            </VBox>
+
+            <VBox styleClass="card" spacing="10">
+                <Label text="Timer lengths" styleClass="h3"/>
+                <HBox spacing="6">
+                    <Button text="Classic 25/5" onAction="#onPresetClassic" styleClass="small"/>
+                    <Button text="Deep 50/10" onAction="#onPresetDeep" styleClass="small"/>
+                    <Button text="Demo 1/1" onAction="#onPresetDemo" styleClass="small"/>
+                </HBox>
+                <GridPane hgap="10" vgap="8">
+                    <Label text="Focus (min)" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                    <Spinner fx:id="focusSpinner" editable="true" prefWidth="150" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                    <Label text="Short break" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                    <Spinner fx:id="shortSpinner" editable="true" prefWidth="150" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                    <Label text="Long break" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                    <Spinner fx:id="longSpinner" editable="true" prefWidth="150" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                    <Label text="Sessions per cycle" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                    <Spinner fx:id="cycleSpinner" editable="true" prefWidth="150" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+                </GridPane>
+                <CheckBox fx:id="autoBreakCheck" text="Start breaks automatically"/>
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Button fx:id="saveConfigButton" text="Apply" onAction="#onSaveConfig"/>
+                    <Label fx:id="configHint" styleClass="muted,small"/>
+                </HBox>
+            </VBox>
+
+            <VBox styleClass="card" spacing="10">
+                <Label text="Recent sessions" styleClass="h3"/>
+                <VBox fx:id="historyList" spacing="6"/>
+            </VBox>
+        </VBox>
+    </ScrollPane>
+</HBox>

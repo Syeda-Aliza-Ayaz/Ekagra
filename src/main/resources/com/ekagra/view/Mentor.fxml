@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.StackPane?>
+
+<!-- Content (list or student detail) is built in MentorController -->
+<ScrollPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.ekagra.controller.MentorController"
+            fitToWidth="true" styleClass="page-scroll">
+    <StackPane fx:id="root"/>
+</ScrollPane>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<ScrollPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.ekagra.controller.AchievementsController"
+            fitToWidth="true" styleClass="page-scroll">
+    <VBox spacing="14">
+        <HBox spacing="14">
+            <HBox styleClass="card,level-card" spacing="22" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+                <StackPane fx:id="levelRingHolder"/>
+                <VBox spacing="8" HBox.hgrow="ALWAYS">
+                    <Label fx:id="levelTitle" styleClass="level-title"/>
+                    <Label fx:id="levelSub" styleClass="muted"/>
+                    <ProgressBar fx:id="xpBar" maxWidth="Infinity" styleClass="xp-bar"/>
+                    <HBox spacing="18">
+                        <Label fx:id="totalXp" styleClass="level-stat"/>
+                        <Label fx:id="badgeCount" styleClass="level-stat"/>
+                        <Label fx:id="habitBest" styleClass="level-stat"/>
+                    </HBox>
+                </VBox>
+            </HBox>
+            <VBox styleClass="card" spacing="10" prefWidth="360" minWidth="320">
+                <Label text="How to earn XP" styleClass="h3"/>
+                <VBox fx:id="xpRules" spacing="8"/>
+            </VBox>
+        </HBox>
+
+        <VBox styleClass="card" spacing="12">
+            <HBox spacing="8" alignment="CENTER_LEFT">
+                <Label text="Badges" styleClass="h3"/>
+                <Label fx:id="badgeSummary" styleClass="muted,small"/>
+            </HBox>
+            <FlowPane fx:id="badgeGrid" hgap="12" vgap="12"/>
+        </VBox>
+    </VBox>
+</ScrollPane>
