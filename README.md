@@ -7,6 +7,8 @@ A Windows desktop app that helps students study with focus and keep healthy scre
 
 Built for **CT-263 Object-Oriented Analysis & Design** with Java 21, JavaFX, SQLite and Maven.
 
+**Viva preparation guide** (design patterns, OOP, architecture, algorithms, model answers): <https://claude.ai/artifact/4iURjJ6QUhFwVgk4AKsLJT>
+
 ---
 
 ## Contents
