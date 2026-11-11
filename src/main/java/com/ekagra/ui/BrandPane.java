@@ -3,22 +3,51 @@ package com.ekagra.ui;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 /** Left-hand branding panel shown on the login and sign-up screens. */
-public class BrandPane extends VBox {
+public class BrandPane extends StackPane {
 
     public BrandPane() {
         getStyleClass().add("brand-pane");
-        setSpacing(14);
         setPrefWidth(470);
         setMinWidth(380);
         setAlignment(Pos.CENTER_LEFT);
+
+        // Subtle authentic Unsplash background texture (DEC-006)
+        try {
+            var url = getClass().getResource("/com/ekagra/images/study_ambience.jpg");
+            if (url != null) {
+                ImageView bg = new ImageView(new Image(url.toExternalForm()));
+                bg.setFitWidth(480);
+                bg.setFitHeight(900);
+                bg.setPreserveRatio(false);
+                bg.setOpacity(0.12);
+                bg.setMouseTransparent(true);
+
+                Rectangle clip = new Rectangle();
+                clip.widthProperty().bind(widthProperty());
+                clip.heightProperty().bind(heightProperty());
+                setClip(clip);
+
+                getChildren().add(bg);
+            }
+        } catch (Exception ignored) {
+        }
+
+        VBox content = new VBox(14);
+        content.setSpacing(14);
+        content.setAlignment(Pos.CENTER_LEFT);
+        content.setPadding(new Insets(40, 48, 40, 48));
 
         LogoMark logo = new LogoMark(60, Color.WHITE, LogoMark.CORAL);
 
@@ -52,7 +81,8 @@ public class BrandPane extends VBox {
         Label footer = new Label("CT-263 · Object-Oriented Analysis & Design");
         footer.getStyleClass().add("brand-footer");
 
-        getChildren().addAll(topSpacer, logo, titleBox, tagline, intro, features, spacer, footer);
+        content.getChildren().addAll(topSpacer, logo, titleBox, tagline, intro, features, spacer, footer);
+        getChildren().add(content);
 
         Animations.breathe(logo);
         Animations.appear(titleBox, 80);

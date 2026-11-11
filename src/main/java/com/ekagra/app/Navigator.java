@@ -58,8 +58,7 @@ public final class Navigator {
     /** Called after a successful login. */
     public static void showMain() {
         var user = SessionContext.getInstance().getCurrentUser();
-        boolean dark = "dark".equals(new SettingsService().getString(user.getId(), SettingsService.THEME, "light"));
-        ThemeManager.apply(dark);
+        ThemeManager.initFromUser(user.getId());
 
         Loaded<MainLayoutController> loaded = load("MainLayout.fxml");
         mainLayout = loaded.controller();
@@ -151,6 +150,12 @@ public final class Navigator {
         }
     }
 
+    public static void refreshTheme() {
+        if (scene != null && scene.getRoot() != null) {
+            ThemeManager.decorate(scene.getRoot());
+        }
+    }
+
     /** Opens a screen and lets its controller receive an argument (e.g. a task to focus on). */
     public static <C> void goTo(Screen screen, Class<C> controllerType, java.util.function.Consumer<C> setup) {
         goTo(screen);
@@ -189,6 +194,10 @@ public final class Navigator {
 
     public static Stage getStage() {
         return stage;
+    }
+
+    public static MainLayoutController getMainLayoutController() {
+        return mainLayout;
     }
 
     public static String stylesheet() {

@@ -836,3 +836,91 @@
     -fx-background-radius: 12;
     -fx-padding: 14 16;
 }
+
+/* ============================================================
+   Personalization, Rafiq, Ambient Sound & Demo Tour Additions
+   ============================================================ */
+
+/* Theme palette pills */
+.palette-pill {
+    -fx-background-color: -color-bg-default;
+    -fx-border-color: -color-border-default;
+    -fx-border-radius: 999;
+    -fx-background-radius: 999;
+    -fx-padding: 6 12;
+    -fx-graphic-text-gap: 8;
+    -fx-font-size: 12.5px;
+    -fx-cursor: hand;
+    -fx-text-fill: -color-fg-default;
+}
+.palette-pill:hover {
+    -fx-background-color: -color-bg-subtle;
+    -fx-border-color: -color-accent-emphasis;
+}
+.palette-pill:selected {
+    -fx-background-color: -color-accent-subtle;
+    -fx-border-color: -color-accent-emphasis;
+    -fx-text-fill: -color-accent-fg;
+    -fx-font-weight: bold;
+}
+
+/* Ambient sound toolbar */
+.sound-bar {
+    -fx-background-color: -color-bg-default;
+    -fx-border-color: -color-border-default;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-padding: 10 16;
+}
+.sound-btn {
+    -fx-cursor: hand;
+}
+
+/* Rafiq study companion */
+.rafiq-bubble-bot {
+    -fx-background-color: -color-bg-subtle;
+    -fx-border-color: -color-border-subtle;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-padding: 12 16;
+    -fx-max-width: 520px;
+}
+.rafiq-bubble-user {
+    -fx-background-color: -color-accent-emphasis;
+    -fx-text-fill: white;
+    -fx-background-radius: 12;
+    -fx-padding: 10 14;
+    -fx-max-width: 440px;
+}
+.rafiq-action-chip {
+    -fx-background-color: -color-bg-default;
+    -fx-border-color: -color-accent-emphasis;
+    -fx-text-fill: -color-accent-fg;
+    -fx-border-radius: 999;
+    -fx-background-radius: 999;
+    -fx-padding: 6 12;
+    -fx-font-size: 12px;
+    -fx-cursor: hand;
+}
+.rafiq-action-chip:hover {
+    -fx-background-color: -color-accent-subtle;
+}
+
+/* Interactive Tour banner */
+.tour-bar {
+    -fx-background-color: -color-bg-default;
+    -fx-border-color: -color-accent-emphasis;
+    -fx-border-width: 2;
+    -fx-border-radius: 14;
+    -fx-background-radius: 14;
+    -fx-padding: 14 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.22), 16, 0.2, 0, 4);
+}
+.tour-key-badge {
+    -fx-background-color: -color-accent-subtle;
+    -fx-text-fill: -color-accent-fg;
+    -fx-font-weight: bold;
+    -fx-font-size: 11.5px;
+    -fx-padding: 3 8;
+    -fx-background-radius: 6;
+}

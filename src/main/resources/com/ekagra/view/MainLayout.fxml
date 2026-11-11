@@ -54,6 +54,14 @@
                         <graphic><FontIcon iconLiteral="fth-clock"/></graphic>
                         <tooltip><Tooltip text="Open Focus Timer"/></tooltip>
                     </Button>
+                    <Button styleClass="icon-button" onAction="#onOpenRahnuma">
+                        <graphic><FontIcon iconLiteral="fth-message-circle"/></graphic>
+                        <tooltip><Tooltip text="Rahnuma Study Companion"/></tooltip>
+                    </Button>
+                    <Button styleClass="icon-button" onAction="#onStartTour">
+                        <graphic><FontIcon iconLiteral="fth-help-circle"/></graphic>
+                        <tooltip><Tooltip text="Interactive App Tour (Press Enter to step)"/></tooltip>
+                    </Button>
                     <Button fx:id="themeButton" styleClass="icon-button" onAction="#onToggleTheme">
                         <tooltip><Tooltip text="Toggle light / dark"/></tooltip>
                     </Button>
@@ -70,6 +78,9 @@
             <center>
                 <StackPane fx:id="content" styleClass="content"/>
             </center>
+            <bottom>
+                <StackPane fx:id="tourContainer" visible="false" managed="false"/>
+            </bottom>
         </BorderPane>
     </center>
 </BorderPane>

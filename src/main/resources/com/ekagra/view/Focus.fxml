@@ -7,6 +7,8 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
@@ -44,6 +46,23 @@
             <Label text="What are you working on?" styleClass="field-label"/>
             <ComboBox fx:id="taskCombo" maxWidth="Infinity"/>
         </VBox>
+
+        <!-- Ambient Sound Controls (FR-Sound) -->
+        <HBox alignment="CENTER" spacing="10" styleClass="sound-bar" maxWidth="380">
+            <FontIcon iconLiteral="fth-headphones"/>
+            <ComboBox fx:id="soundCombo" prefWidth="135"/>
+            <Button fx:id="soundPlayBtn" styleClass="icon-button,sound-btn" onAction="#onToggleSoundPlay">
+                <graphic><FontIcon fx:id="soundPlayIcon" iconLiteral="fth-play"/></graphic>
+                <tooltip><Tooltip text="Play ambient focus sound"/></tooltip>
+            </Button>
+            <Button fx:id="soundMuteBtn" styleClass="icon-button,sound-btn" onAction="#onToggleSoundMute">
+                <graphic><FontIcon fx:id="soundMuteIcon" iconLiteral="fth-volume-2"/></graphic>
+                <tooltip><Tooltip text="Mute / Unmute"/></tooltip>
+            </Button>
+            <Slider fx:id="soundVolumeSlider" min="0" max="1" value="0.5" prefWidth="75">
+                <tooltip><Tooltip text="Sound volume"/></tooltip>
+            </Slider>
+        </HBox>
 
         <Label fx:id="distractionLabel" styleClass="distraction-label" visible="false"/>
     </VBox>
@@ -88,3 +107,4 @@
         </VBox>
     </ScrollPane>
 </HBox>
+

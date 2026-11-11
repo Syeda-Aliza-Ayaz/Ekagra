@@ -6,6 +6,8 @@ import com.ekagra.dao.SettingsDao;
 public class SettingsService {
 
     public static final String THEME = "theme";                       // "light" | "dark"
+    public static final String THEME_PALETTE = "theme.palette";       // "ocean" | "matcha" | "nordic" | "terracotta" | "amethyst" | "obsidian" | "custom"
+    public static final String THEME_CUSTOM_ACCENT = "theme.customAccent"; // hex string, e.g. "#2563EB"
     public static final String FOCUS_MIN = "focus.minutes";
     public static final String SHORT_BREAK_MIN = "focus.shortBreak";
     public static final String LONG_BREAK_MIN = "focus.longBreak";

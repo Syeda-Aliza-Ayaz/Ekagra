@@ -1,6 +1,8 @@
 package com.ekagra.controller;
 
 import com.ekagra.model.FocusSession;
+import com.ekagra.service.AmbientSoundService;
+import javafx.scene.control.Slider;
 import com.ekagra.model.SessionType;
 import com.ekagra.model.Task;
 import com.ekagra.pattern.observer.TimerListener;
@@ -54,6 +56,12 @@ public class FocusController implements TimerListener, Disposable {
     @FXML private Spinner<Integer> cycleSpinner;
     @FXML private CheckBox autoBreakCheck;
     @FXML private Label configHint;
+    @FXML private ComboBox<AmbientSoundService.SoundType> soundCombo;
+    @FXML private Button soundPlayBtn;
+    @FXML private FontIcon soundPlayIcon;
+    @FXML private Button soundMuteBtn;
+    @FXML private FontIcon soundMuteIcon;
+    @FXML private Slider soundVolumeSlider;
 
     private final TimerRing ring = new TimerRing(220);
     private final TaskService taskService = new TaskService();
@@ -65,6 +73,20 @@ public class FocusController implements TimerListener, Disposable {
     private void initialize() {
         focusService = FocusService.get();
         timer = focusService.getTimer();
+        try {
+            var zenUrl = getClass().getResource("/com/ekagra/images/focus_forest.jpg");
+            if (zenUrl != null) {
+                javafx.scene.image.ImageView zen = new javafx.scene.image.ImageView(new javafx.scene.image.Image(zenUrl.toExternalForm()));
+                zen.setFitWidth(210);
+                zen.setFitHeight(210);
+                zen.setOpacity(0.08);
+                zen.setMouseTransparent(true);
+                javafx.scene.shape.Circle clip = new javafx.scene.shape.Circle(105, 105, 105);
+                zen.setClip(clip);
+                ringHolder.getChildren().add(zen);
+            }
+        } catch (Exception ignored) {
+        }
         ringHolder.getChildren().add(ring);
 
         ToggleGroup modes = new ToggleGroup();
@@ -80,6 +102,7 @@ public class FocusController implements TimerListener, Disposable {
 
         setupTaskCombo();
         setupConfig();
+        setupSoundControls();
 
         timer.addListener(this);
         refreshTimer();
@@ -89,6 +112,7 @@ public class FocusController implements TimerListener, Disposable {
     @Override
     public void dispose() {
         timer.removeListener(this);
+        AmbientSoundService.get().pause();
     }
 
     /** Called from the Tasks screen's "start focus" button. */
@@ -112,6 +136,13 @@ public class FocusController implements TimerListener, Disposable {
     @Override
     public void onStateChanged(PomodoroTimer t) {
         refreshTimer();
+        if (t.getState().isRunning() && t.getCurrentType() == SessionType.FOCUS) {
+            AmbientSoundService.get().play();
+            updateSoundUi();
+        } else if (t.getState().isPaused() || t.getCurrentType().isBreak()) {
+            AmbientSoundService.get().pause();
+            updateSoundUi();
+        }
     }
 
     @Override
@@ -231,7 +262,7 @@ public class FocusController implements TimerListener, Disposable {
             String day = s.getStartedAt().toLocalDate().equals(today) ? "Today"
                 : s.getStartedAt().format(Formats.DAY_SHORT);
             Label when = Ui.label(day + " " + s.getStartedAt().format(Formats.TIME)
-                + " · " + Formats.seconds(s.getActualSec())
+                + " Ã‚Â· " + Formats.seconds(s.getActualSec())
                 + (s.isCompleted() ? "" : " (stopped)"), "muted", "small");
             VBox text = new VBox(1, title, when);
             HBox.setHgrow(text, javafx.scene.layout.Priority.ALWAYS);
@@ -240,7 +271,7 @@ public class FocusController implements TimerListener, Disposable {
             row.setAlignment(Pos.CENTER_LEFT);
             row.getStyleClass().add("history-row");
             if (s.getFocusRating() != null) {
-                row.getChildren().add(Ui.label("★".repeat(s.getFocusRating()), "rating-stars"));
+                row.getChildren().add(Ui.label("Ã¢Ëœâ€¦".repeat(s.getFocusRating()), "rating-stars"));
             }
             if (s.getDistractions() > 0) {
                 Label d = new Label(String.valueOf(s.getDistractions()), new FontIcon("fth-alert-triangle"));
@@ -262,8 +293,8 @@ public class FocusController implements TimerListener, Disposable {
         items.addAll(taskService.getOpenTasks(uid));
         taskCombo.setItems(FXCollections.observableArrayList(items));
         Ui.nullableCombo(taskCombo, "No specific task", t -> t.getTitle()
-            + (t.getSubject() != null ? "  ·  " + t.getSubject() : "")
-            + (t.getSpentMin() > 0 ? "  ·  " + Formats.minutes(t.getSpentMin()) + " so far" : ""));
+            + (t.getSubject() != null ? "  Ã‚Â·  " + t.getSubject() : "")
+            + (t.getSpentMin() > 0 ? "  Ã‚Â·  " + Formats.minutes(t.getSpentMin()) + " so far" : ""));
         selectTaskInCombo(timer.getTask());
         updatingTaskCombo = false;
 
@@ -347,4 +378,52 @@ public class FocusController implements TimerListener, Disposable {
         focusService.saveConfig(config);
         configHint.setText(timer.isActive() ? "Applies from the next session" : "Saved");
     }
+
+    // ---------- Ambient Sound Controls (FR-Sound) ----------
+
+    private void setupSoundControls() {
+        if (soundCombo == null) return;
+        soundCombo.setItems(FXCollections.observableArrayList(AmbientSoundService.SoundType.values()));
+        soundCombo.setValue(AmbientSoundService.get().getCurrentType());
+        soundCombo.valueProperty().addListener((o, old, now) -> {
+            if (now != null) {
+                AmbientSoundService.get().play(now);
+                updateSoundUi();
+            }
+        });
+
+        if (soundVolumeSlider != null) {
+            soundVolumeSlider.setValue(AmbientSoundService.get().getVolume());
+            soundVolumeSlider.valueProperty().addListener((o, old, now) -> {
+                AmbientSoundService.get().setVolume(now.doubleValue());
+            });
+        }
+        updateSoundUi();
+    }
+
+    @FXML
+    private void onToggleSoundPlay() {
+        AmbientSoundService.get().togglePlay();
+        updateSoundUi();
+    }
+
+    @FXML
+    private void onToggleSoundMute() {
+        AmbientSoundService.get().toggleMute();
+        updateSoundUi();
+    }
+
+    private void updateSoundUi() {
+        if (soundPlayIcon == null || soundMuteIcon == null) return;
+        AmbientSoundService s = AmbientSoundService.get();
+        soundPlayIcon.setIconLiteral(s.isPlaying() ? "fth-pause" : "fth-play");
+        soundMuteIcon.setIconLiteral(s.isMuted() ? "fth-volume-x" : "fth-volume-2");
+        if (soundPlayBtn != null) {
+            soundPlayBtn.setTooltip(new Tooltip(s.isPlaying() ? "Pause ambient sound" : "Play ambient sound"));
+        }
+        if (soundMuteBtn != null) {
+            soundMuteBtn.setTooltip(new Tooltip(s.isMuted() ? "Unmute" : "Mute"));
+        }
+    }
+
 }

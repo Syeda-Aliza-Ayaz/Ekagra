@@ -59,6 +59,7 @@ public class MainLayoutController implements TimerListener, Disposable {
         }
     };
     @FXML private StackPane content;
+    @FXML private StackPane tourContainer;
 
     private final Map<Screen, Button> navButtons = new EnumMap<>(Screen.class);
     private final Avatar avatar = new Avatar(36);
@@ -103,6 +104,7 @@ public class MainLayoutController implements TimerListener, Disposable {
         if (TrackingService.isStarted()) {
             TrackingService.get().removeListener(trackingIndicator);
         }
+        com.ekagra.ui.tour.DemoTourManager.get().stop();
     }
 
     private void updateTrackingChip() {
@@ -241,4 +243,20 @@ public class MainLayoutController implements TimerListener, Disposable {
     private void onLogout() {
         Navigator.logout();
     }
+
+    public StackPane getTourContainer() {
+        return tourContainer;
+    }
+
+    @FXML
+    private void onOpenRahnuma() {
+        com.ekagra.ui.RahnumaDialog.show();
+    }
+
+    @FXML
+    private void onStartTour() {
+        com.ekagra.ui.tour.DemoTourManager.get().start(this);
+    }
 }
+
+

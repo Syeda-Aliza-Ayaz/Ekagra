@@ -29,6 +29,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
+import javafx.scene.control.ColorPicker;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.layout.VBox;
 import org.kordamp.ikonli.javafx.FontIcon;
 
@@ -46,7 +49,8 @@ public class SettingsController {
         user = SessionContext.getInstance().getCurrentUser();
         uid = user.getId();
 
-        root.getChildren().add(section("fth-sun", "Appearance", "How Ekagra looks.", themeRow()));
+        root.getChildren().add(section("fth-sun", "Appearance", "Personalize how Ekagra looks and feels.",
+            themeRow(), paletteRow(), customAccentRow(), resetThemeRow()));
 
         if (SessionContext.getInstance().isStudent()) {
             root.getChildren().add(section("fth-bar-chart-2", "Productivity score",
@@ -160,6 +164,71 @@ public class SettingsController {
             }
         });
         return row("Theme", "Dark mode is easier on the eyes at night.", new HBox(light, dark));
+    }
+
+    private HBox paletteRow() {
+        HBox swatches = new HBox(8);
+        swatches.setAlignment(Pos.CENTER_LEFT);
+        ToggleGroup group = new ToggleGroup();
+
+        for (ThemeManager.Palette p : ThemeManager.ALL_PALETTES) {
+            Circle dot = new Circle(6, Color.web(p.primaryHex()));
+            ToggleButton tb = new ToggleButton(p.name(), dot);
+            tb.setToggleGroup(group);
+            tb.getStyleClass().add("palette-pill");
+            if (ThemeManager.getCustomAccent() == null && ThemeManager.getCurrentPalette().id().equals(p.id())) {
+                tb.setSelected(true);
+            }
+            tb.setOnAction(e -> {
+                if (tb.isSelected()) {
+                    ThemeManager.setPalette(p);
+                    Navigator.refreshTheme();
+                }
+            });
+            swatches.getChildren().add(tb);
+        }
+
+        return row("Color Palette", "Choose a handcrafted color identity for your workspace.", swatches);
+    }
+
+    private HBox customAccentRow() {
+        ColorPicker picker = new ColorPicker();
+        String currentHex = ThemeManager.getCustomAccent();
+        if (currentHex != null) {
+            try {
+                picker.setValue(Color.web(currentHex));
+            } catch (Exception ignored) {}
+        } else {
+            picker.setValue(Color.web(ThemeManager.getCurrentPalette().primaryHex()));
+        }
+
+        picker.setOnAction(e -> {
+            Color c = picker.getValue();
+            if (c != null) {
+                int r = (int) Math.round(c.getRed() * 255.0);
+                int g = (int) Math.round(c.getGreen() * 255.0);
+                int b = (int) Math.round(c.getBlue() * 255.0);
+                String hex = String.format("#%02X%02X%02X", r, g, b);
+                ThemeManager.setCustomAccent(hex);
+                Navigator.refreshTheme();
+            }
+        });
+
+        return row("Custom Accent Color", "Pick your favorite hue. Ekagra balances contrasts automatically.", picker);
+    }
+
+    private HBox resetThemeRow() {
+        Button resetBtn = new Button("Reset to default theme", new FontIcon("fth-rotate-ccw"));
+        Label toast = Ui.label("", "muted", "small");
+        resetBtn.setOnAction(e -> {
+            ThemeManager.resetToDefault();
+            Navigator.refreshTheme();
+            toast.setText("Restored factory Ocean Blue theme.");
+            Navigator.goTo(Screen.SETTINGS);
+        });
+        HBox box = new HBox(12, resetBtn, toast);
+        box.setAlignment(Pos.CENTER_LEFT);
+        return row("Restore Default", "Return to Ekagra's classic Ocean Focus palette.", box);
     }
 
     private HBox strategyRow() {

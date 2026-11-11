@@ -14,12 +14,27 @@ out/
 *.db-shm
 exports/
 
-# IDE
+# IDE & Editor
 .idea/
 *.iml
 .vscode/
+.project
+.classpath
+.settings/
+bin/
 
-# OS
+# OS & Logs
 Thumbs.db
 .DS_Store
+desktop.ini
+*.log
+*.tmp
+*.bak
+
+# Agent / AI local workspace tooling
+.agents/
+skills-lock.json
+AGENTS.md
+.antigravity/
+
 

@@ -1,0 +1,3 @@
+@echo off
+echo Starting Ekagra...
+java -cp "target/classes;target/ekagra-1.0.0.jar" com.ekagra.app.Launcher
