@@ -2,7 +2,10 @@ package com.ekagra.ui;
 
 import com.ekagra.app.Navigator;
 import com.ekagra.app.ThemeManager;
+import com.ekagra.model.Mentor;
 import com.ekagra.model.Student;
+import com.ekagra.model.User;
+import com.ekagra.service.MentorRahnumaService;
 import com.ekagra.service.RahnumaService;
 import com.ekagra.service.SessionContext;
 import javafx.application.Platform;
@@ -23,21 +26,20 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.kordamp.ikonli.javafx.FontIcon;
 
+import java.util.function.Supplier;
+
 /**
  * Slide-in / Modal conversational interface for "Rahnuma" (رہنما).
  */
 public class RahnumaDialog {
 
     private final Stage stage;
-    private final RahnumaService rahnumaService;
+    private final java.util.function.Function<String, RahnumaService.RahnumaResponse> queryHandler;
     private final VBox messageList;
     private final ScrollPane scrollPane;
     private final TextField inputField;
 
     public RahnumaDialog() {
-        Student s = SessionContext.getInstance().getStudent();
-        this.rahnumaService = new RahnumaService(s);
-
         stage = new Stage();
         stage.initOwner(Navigator.getStage());
         stage.initModality(Modality.APPLICATION_MODAL);
@@ -65,7 +67,7 @@ public class RahnumaDialog {
         VBox titleBox = new VBox(2);
         Label title = new Label("Rahnuma (رہنما)");
         title.getStyleClass().addAll("h2");
-        Label subtitle = new Label("Your data-grounded study guide & focus mentor");
+        Label subtitle = new Label("Your study companion and mentoring assistant");
         subtitle.getStyleClass().addAll("muted", "small");
         titleBox.getChildren().addAll(title, subtitle);
 
@@ -84,23 +86,25 @@ public class RahnumaDialog {
         chipBox.setPadding(new Insets(0, 20, 10, 20));
         chipBox.setAlignment(Pos.CENTER_LEFT);
 
-        Button chipScore = new Button("📊 Score Analysis");
-        chipScore.getStyleClass().add("rafiq-action-chip");
-        chipScore.setOnAction(e -> triggerAction("Analyze Today's Score", rahnumaService::analyzeToday));
-
-        Button chipDistract = new Button("🛡️ Distraction Audit");
-        chipDistract.getStyleClass().add("rafiq-action-chip");
-        chipDistract.setOnAction(e -> triggerAction("Audit Distractions", rahnumaService::distractionAudit));
-
-        Button chipTasks = new Button("📝 Plan Tasks");
-        chipTasks.getStyleClass().add("rafiq-action-chip");
-        chipTasks.setOnAction(e -> triggerAction("Plan Upcoming Deadlines", rahnumaService::planUpcomingTasks));
-
-        Button chipWellbeing = new Button("🌿 Wellbeing");
-        chipWellbeing.getStyleClass().add("rafiq-action-chip");
-        chipWellbeing.setOnAction(e -> triggerAction("Reflect on Energy & Wellbeing", rahnumaService::reflectWellbeing));
-
-        chipBox.getChildren().addAll(chipScore, chipDistract, chipTasks, chipWellbeing);
+        User user = SessionContext.getInstance().getCurrentUser();
+        String greeting;
+        if (user instanceof Student student) {
+            RahnumaService assistant = new RahnumaService(student);
+            queryHandler = assistant::answerQuery;
+            greeting = assistant.getGreeting();
+            addActionChip(chipBox, "📊 Score Analysis", "Analyze Today's Score", assistant::analyzeToday);
+            addActionChip(chipBox, "🛡️ Distraction Audit", "Audit Distractions", assistant::distractionAudit);
+            addActionChip(chipBox, "📝 Plan Tasks", "Plan Upcoming Deadlines", assistant::planUpcomingTasks);
+            addActionChip(chipBox, "🌿 Wellbeing", "Reflect on Energy & Wellbeing", assistant::reflectWellbeing);
+        } else if (user instanceof Mentor mentor) {
+            MentorRahnumaService assistant = new MentorRahnumaService(mentor);
+            queryHandler = assistant::answerQuery;
+            greeting = assistant.getGreeting();
+            addActionChip(chipBox, "👥 Student Overview", "Summarize Student Progress", assistant::summarizeStudents);
+            addActionChip(chipBox, "🔔 Needs Support", "Find Students Needing Support", assistant::studentsNeedingSupport);
+        } else {
+            throw new IllegalStateException("Rahnuma requires a signed-in student or mentor");
+        }
 
         // ---------- Message Area ----------
         messageList = new VBox(12);
@@ -117,7 +121,7 @@ public class RahnumaDialog {
         root.setCenter(centerBox);
 
         // Initial Greeting
-        addBotMessage(new RahnumaService.RahnumaResponse(rahnumaService.getGreeting()));
+        addBotMessage(new RahnumaService.RahnumaResponse(greeting));
 
         // ---------- Bottom Input Bar ----------
         HBox inputBar = new HBox(10);
@@ -125,7 +129,9 @@ public class RahnumaDialog {
         inputBar.setAlignment(Pos.CENTER_LEFT);
 
         inputField = new TextField();
-        inputField.setPromptText("Ask Rahnuma about your study habits, score or tasks...");
+        inputField.setPromptText(user instanceof Mentor
+            ? "Ask Rahnuma about your students or their progress..."
+            : "Ask Rahnuma about your study habits, score or tasks...");
         HBox.setHgrow(inputField, Priority.ALWAYS);
         inputField.setOnAction(e -> onSend());
 
@@ -157,9 +163,17 @@ public class RahnumaDialog {
 
         addUserMessage(text);
         Platform.runLater(() -> {
-            RahnumaService.RahnumaResponse resp = rahnumaService.answerQuery(text);
+            RahnumaService.RahnumaResponse resp = queryHandler.apply(text);
             addBotMessage(resp);
         });
+    }
+
+    private void addActionChip(HBox chipBox, String label, String userLabel,
+                              Supplier<RahnumaService.RahnumaResponse> action) {
+        Button chip = new Button(label);
+        chip.getStyleClass().add("rafiq-action-chip");
+        chip.setOnAction(e -> triggerAction(userLabel, action));
+        chipBox.getChildren().add(chip);
     }
 
     private void triggerAction(String userLabel, java.util.function.Supplier<RahnumaService.RahnumaResponse> action) {

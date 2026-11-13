@@ -3,10 +3,10 @@ package com.ekagra.ui.tour;
 import com.ekagra.app.Navigator;
 import com.ekagra.app.Screen;
 import com.ekagra.controller.MainLayoutController;
+import com.ekagra.model.Role;
 import com.ekagra.service.AmbientSoundService;
+import com.ekagra.service.SessionContext;
 import com.ekagra.ui.Animations;
-import com.ekagra.ui.RahnumaDialog;
-import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -21,7 +21,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import org.kordamp.ikonli.javafx.FontIcon;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,71 +31,97 @@ public final class DemoTourManager {
 
     private static final DemoTourManager INSTANCE = new DemoTourManager();
 
-    private final List<TourStep> steps = new ArrayList<>();
+    private List<TourStep> steps = List.of();
     private int currentIndex = 0;
     private boolean active = false;
     private javafx.event.EventHandler<KeyEvent> keyFilter;
     private MainLayoutController layoutController;
 
     private DemoTourManager() {
-        initSteps();
     }
 
     public static DemoTourManager get() {
         return INSTANCE;
     }
 
-    private void initSteps() {
-        steps.clear();
+    static List<TourStep> stepsFor(Role role) {
+        if (role == Role.MENTOR) {
+            return List.of(
+                new TourStep(
+                    Screen.MENTOR,
+                    "1. Student Overview",
+                    "Review linked students' recent scores, focus time, overdue tasks, and follow-up alerts."
+                ),
+                new TourStep(
+                    Screen.RULES,
+                    "2. App Rules",
+                    "Review the app and website categories used by Focus Guard."
+                ),
+                new TourStep(
+                    Screen.NOTIFICATIONS,
+                    "3. Notifications",
+                    "Check student messages, reminders, and other account updates."
+                ),
+                new TourStep(
+                    Screen.SETTINGS,
+                    "4. Settings & Rahnuma",
+                    "Personalize the workspace and ask Rahnuma for a linked-student progress summary."
+                )
+            );
+        }
+        return List.of(
+            new TourStep(
+                Screen.DASHBOARD,
+                "1. Dashboard & Productivity Score",
+                "Real-time daily focus score (0-100) calculated from deep study sessions, task output, and distraction resistance."
+            ),
 
-        steps.add(new TourStep(
-            Screen.DASHBOARD,
-            "1. Dashboard & Productivity Score",
-            "Real-time daily focus score (0-100) calculated from deep study sessions, task output, and distraction resistance."
-        ));
+            new TourStep(
+                Screen.FOCUS,
+                "2. Pomodoro Focus Timer & Ambient Sound",
+                "Configurable focus sessions with built-in ambient audio (Rain, Stream, Alpha waves) to sustain flow state.",
+                () -> AmbientSoundService.get().play(AmbientSoundService.SoundType.RAIN)
+            ),
 
-        steps.add(new TourStep(
-            Screen.FOCUS,
-            "2. Pomodoro Focus Timer & Ambient Sound",
-            "Configurable focus sessions with built-in ambient audio (Rain, Stream, Alpha waves) to sustain flow state.",
-            () -> {
-                AmbientSoundService.get().play(AmbientSoundService.SoundType.RAIN);
-            }
-        ));
+            new TourStep(
+                Screen.TASKS,
+                "3. Coursework Tasks & Habit Tracking",
+                "Organize assignments by subject and deadline, track Pomodoro velocity, and build consistent daily habits."
+            ),
 
-        steps.add(new TourStep(
-            Screen.TASKS,
-            "3. Coursework Tasks & Habit Tracking",
-            "Organize assignments by subject and deadline, track Pomodoro velocity, and build consistent daily habits."
-        ));
+            new TourStep(
+                Screen.WELLBEING,
+                "4. Digital Wellbeing & 20-20-20 Eye Breaks",
+                "Prevent academic burnout with daily screen-time limits, eye strain reminders, and mood/sleep logs."
+            ),
 
-        steps.add(new TourStep(
-            Screen.WELLBEING,
-            "4. Digital Wellbeing & 20-20-20 Eye Breaks",
-            "Prevent academic burnout with daily screen-time limits, eye strain reminders, and mood/sleep logs."
-        ));
+            new TourStep(
+                Screen.RULES,
+                "5. Focus Guard & Distraction Boundaries",
+                "Monitors active window titles and soft-nudges students away from blacklisted distracting apps during study."
+            ),
 
-        steps.add(new TourStep(
-            Screen.RULES,
-            "5. Focus Guard & Distraction Boundaries",
-            "Monitors active window titles and soft-nudges students away from blacklisted distracting apps during study."
-        ));
+            new TourStep(
+                Screen.ANALYTICS,
+                "6. Deep Analytics & Viva Reports",
+                "Visualizes 7-day focus intensity, hourly activity distributions, category shares, and PDF export for supervisors."
+            ),
 
-        steps.add(new TourStep(
-            Screen.ANALYTICS,
-            "6. Deep Analytics & Viva Reports",
-            "Visualizes 7-day focus intensity, hourly activity distributions, category shares, and PDF export for supervisors."
-        ));
-
-        steps.add(new TourStep(
-            Screen.SETTINGS,
-            "7. Themes, Personalization & Rahnuma (رہنما)",
-            "Personalize workspace with 6 curated aesthetic palettes, custom accent color picker, and the Rahnuma study mentor."
-        ));
+            new TourStep(
+                Screen.SETTINGS,
+                "7. Themes, Personalization & Rahnuma (رہنما)",
+                "Personalize workspace with 6 curated aesthetic palettes, custom accent color picker, and the Rahnuma study mentor."
+            )
+        );
     }
 
     public void start(MainLayoutController controller) {
         this.layoutController = controller;
+        var user = SessionContext.getInstance().getCurrentUser();
+        if (user == null) {
+            throw new IllegalStateException("The guided tour requires a signed-in user");
+        }
+        this.steps = stepsFor(user.getRole());
         this.currentIndex = 0;
         this.active = true;
 
@@ -235,4 +260,3 @@ public final class DemoTourManager {
         return active;
     }
 }
-
